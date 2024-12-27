@@ -1,0 +1,53 @@
+﻿@model IEnumerable<WebApplication3.Models.DetalleVentum>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Detalle de Ventas</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Cantidad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Subtotal)
+            </th>
+            <th>
+                ID de la factura
+            </th>
+            <th>
+                Nombre del producto
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cantidad)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Subtotal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdFacturaNavigation.IdFactura)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdProductoNavigation.NomProducto)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdDetalleVenta">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IdDetalleVenta">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdDetalleVenta">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

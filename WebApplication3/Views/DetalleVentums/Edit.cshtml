@@ -1,0 +1,94 @@
+﻿@model WebApplication3.Models.DetalleVentum
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Editar detalle de la venta</h1>
+
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdDetalleVenta" />
+            <div class="form-group">
+                <label asp-for="IdFactura" class="control-label"></label>
+                <select asp-for="IdFactura" class="form-control" asp-items="ViewBag.IdFactura"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdProducto" class="control-label"></label>
+                <select id="selectProducto" asp-for="IdProducto" class="form-control" asp-items="ViewBag.IdProducto"></select>
+            </div>
+
+            <div class="form-group">
+                <label for="precioProducto" class="control-label">Precio</label>
+                <input type="text" id="precioProducto" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="Cantidad" class="control-label"></label>
+                <input asp-for="Cantidad" class="form-control" id="cantidadProducto" />
+                <span asp-validation-for="Cantidad" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Subtotal" class="control-label"></label>
+                <input asp-for="Subtotal" class="form-control" id="subtotalProducto" />
+                <span asp-validation-for="Subtotal" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+            $(document).ready(function () {
+                $('#selectProducto').change(function () {
+                    var idProducto = $(this).val();
+                    if (idProducto) {
+                        $.ajax({
+                            url: '/DetalleVentums/GetPrecioProducto', // Ajusta la ruta según tu controlador
+                            type: 'GET',
+                            data: { idProducto: idProducto },
+                            success: function (data) {
+                                if (data.precio) {
+                                    $('#precioProducto').val(data.precio);
+                                } else {
+                                    alert(data.error);
+                                }
+                            },
+                            error: function () {
+                                alert('Error al obtener el precio del producto.');
+                            }
+                        });
+                    } else {
+                        $('#precioProducto').val('');
+                    }
+                });
+            });
+
+           $(document).ready(function () {
+            function calcularSubtotal() {
+                var precio = parseFloat($('#precioProducto').val()) || 0; // Precio del producto
+                var cantidad = parseInt($('#cantidadProducto').val()) || 0; // Cantidad ingresada
+                var subtotal = precio * cantidad; // Calcular subtotal
+                $('#subtotalProducto').val(subtotal.toFixed(2)); // Actualizar el campo de subtotal
+            }
+
+            // Detectar cambios en el precio o la cantidad
+            $('#precioProducto, #cantidadProducto').on('input', function () {
+                calcularSubtotal();
+            });
+        });
+
+    </script>
+}
